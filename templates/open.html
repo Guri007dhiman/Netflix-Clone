@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            overflow: hidden;
+            animation: moveBackground 20s linear infinite;
+            background: linear-gradient(45deg, #000000, #333333);
+            background-size: 200% 200%;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .letter {
+            font-size: 8rem;
+            font-family: 'Arial', sans-serif;
+            color: red;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popUp 2s ease forwards;
+            font-weight: bold;
+        }
+
+        #n { animation-delay: 0.2s; }
+        #e { animation-delay: 0.4s; }
+        #t { animation-delay: 0.6s; }
+        #f { animation-delay: 0.8s; }
+        #l { animation-delay: 1s; }
+        #i { animation-delay: 1.2s; }
+        #x { animation-delay: 1.4s; }
+
+        @keyframes popUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loading Spinner */
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .spinner {
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid red;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 10px;
+            color: white;
+            font-size: 1.2rem;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="textContainer">
+        <span class="letter" id="n">N</span>
+        <span class="letter" id="e">E</span>
+        <span class="letter" id="t">T</span>
+        <span class="letter" id="f">F</span>
+        <span class="letter" id="l">L</span>
+        <span class="letter" id="i">I</span>
+        <span class="letter" id="x">X</span>
+    </div>
+
+    <div class="loading-container" id="loadingContainer">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            // Hide Netflix text and show loading animation
+            document.getElementById("textContainer").style.display = "none";
+            document.getElementById("loadingContainer").style.display = "flex";
+
+            // After 3 seconds, redirect to dashboard.html
+            setTimeout(() => {
+                window.location.href = "http://127.0.0.1:5000/dash";
+            }, 3000);
+        }, 4000); // Hold Netflix for 2 sec after animation ends (2s animation + 2s hold)
+    </script>
+</body>
+</html>

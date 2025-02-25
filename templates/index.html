@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141414;
+            color: white;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo {
+            height: 40px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .notifications, .profile-menu {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .profile-name {
+            font-size: 1rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            text-align: left;
+            padding: 0 50px 100px;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .overlay {
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        .featured-title {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .featured-description {
+            font-size: 1.2rem;
+            margin: 30px 0;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 10px;
+            z-index: 1;
+        }
+
+        .play-btn, .info-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .play-btn {
+            background-color: #e50914;
+            color: white;
+        }
+
+        .info-btn {
+            background-color: rgba(109, 109, 110, 0.7);
+            color: white;
+        }
+
+        /* Movie Section */
+        .movie-section {
+            padding: 20px 50px;
+        }
+
+        .movie-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .carousel-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .movie-carousel {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .movie-card {
+            position: relative;
+            cursor: pointer;
+            flex: 0 0 auto;
+            width: 200px;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-btn {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        /* Movie Details Section */
+        .movie-details {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 50px;
+            overflow-y: auto;
+        }
+
+        .movie-details-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .movie-details img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .movie-details h2 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+        }
+
+        .movie-details p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .movie-details .cast, .movie-details .director {
+            margin: 20px 0;
+        }
+
+        .play-movie-btn {
+            padding: 10px 20px;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .close-details {
+            font-size: 2rem;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Full-Screen Video Player */
+        .fullscreen-video-player {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+        }
+
+        .fullscreen-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .close-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #000;
+            margin-top: 50px;
+        }
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .faq-question:hover {
+            background-color: #444;
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        .faq-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-toggle.active {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo" class="logo">
+        <div class="nav-right">
+            <input type="text" placeholder="Search" class="search-bar">
+            <div class="notifications">🔔</div>
+            <div class="profile-section">
+                <img id="profileImage" class="profile-image" src="" alt="Profile Picture">
+                <p id="profileName" class="profile-name"></p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Background Video -->
+    <div class="hero">
+        <video autoplay muted loop class="background-video">
+            <source src="{{ url_for('static', filename='video2.mp4') }}" type="video/mp4">
+        </video>
+        <div class="overlay">
+            <h1 class="featured-title">Stranger Things</h1>
+            <p class="featured-description">When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces to get him back.</p>
+            <div class="hero-buttons">
+                <button class="play-btn" onclick="playFullScreen('{{ url_for('static', filename='video2.mp4') }}')">▶ Play</button>
+                <button class="info-btn" onclick="openMovieDetails('Stranger Things', 'When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces to get him back.', '{{ url_for('static', filename='stranger-things.jpg') }}', '{{ url_for('static', filename='video2.mp4') }}', 'Millie Bobby Brown, Finn Wolfhard, Winona Ryder', 'The Duffer Brothers')">ℹ More Info</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Sections -->
+    <div class="movie-section">
+        <h2>Trending Now</h2>
+        <div class="carousel-container">
+            <button class="carousel-btn prev-btn">&#10094;</button>
+            <div class="movie-carousel">
+                <!-- Movie 1: I Am Vengeance -->
+                <div class="movie-card" onclick="openMovieDetails('I Am Vengeance', 'A former soldier seeks revenge against a ruthless gang that murdered his team.', '{{ url_for('static', filename='movie1.jpg') }}', '{{ url_for('static', filename='2.mp4') }}', 'Stuart Brennan, Gary Daniels, Anna Shaffer', 'Ross Boyask')">
+                    <img src="{{ url_for('static', filename='movie1.jpg') }}" alt="I Am Vengeance">
+                </div>
+                <!-- Movie 2: Deadpool and Wolverine -->
+                <div class="movie-card" onclick="openMovieDetails('Deadpool and Wolverine', 'The merc with a mouth teams up with the clawed mutant for an action-packed adventure.', '{{ url_for('static', filename='movie2.jpg') }}', '{{ url_for('static', filename='5.mp4') }}', 'Ryan Reynolds, Hugh Jackman, Morena Baccarin', 'Shawn Levy')">
+                    <img src="{{ url_for('static', filename='movie2.jpg') }}" alt="Deadpool and Wolverine">
+                </div>
+                <!-- Movie 3: Daredevil: Born Again -->
+                <div class="movie-card" onclick="openMovieDetails('Daredevil: Born Again', 'Matt Murdock returns as Daredevil to protect Hell\'s Kitchen from new threats.', '{{ url_for('static', filename='movie3.jpg') }}', '{{ url_for('static', filename='1.mp4') }}', 'Charlie Cox, Vincent D\'Onofrio, Deborah Ann Woll', 'Dario Scardapane')">
+                    <img src="{{ url_for('static', filename='movie3.jpg') }}" alt="Daredevil: Born Again">
+                </div>
+                <!-- Movie 4: Marvel 2.14.25 -->
+                <div class="movie-card" onclick="openMovieDetails('Marvel 2.14.25', 'A mysterious new chapter in the Marvel Cinematic Universe unfolds.', '{{ url_for('static', filename='movie4.jpg') }}', '{{ url_for('static', filename='3.mp4') }}', 'TBA', 'TBA')">
+                    <img src="{{ url_for('static', filename='movie4.jpg') }}" alt="Marvel 2.14.25">
+                </div>
+            </div>
+            <button class="carousel-btn next-btn">&#10095;</button>
+        </div>
+    </div>
+
+    <!-- Movie Details Section -->
+    <div id="movieDetails" class="movie-details">
+        <div class="movie-details-content">
+            <button class="close-details" onclick="closeMovieDetails()">X</button>
+            <img id="movieDetailImage" src="" alt="Movie Details">
+            <h2 id="movieTitle">Movie Title</h2>
+            <p id="movieDescription">Movie Description</p>
+            <div class="cast">
+                <strong>Cast:</strong> <span id="movieCast"></span>
+            </div>
+            <div class="director">
+                <strong>Director:</strong> <span id="movieDirector"></span>
+            </div>
+            <button class="play-movie-btn" onclick="playFullScreen(document.getElementById('movieDetailVideo').src)">▶ Play Movie</button>
+            <p id="movieDescription">Movie Description</p>
+            <video id="movieDetailVideo" style="display: none;">
+                <source src="" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <!-- Full-Screen Video Player -->
+    <div class="fullscreen-video-player" id="fullscreenVideoPlayer">
+        <video class="fullscreen-video" controls id="fullscreenVideo">
+            <source src="" type="video/mp4">
+        </video>
+        <button class="close-fullscreen" onclick="closeFullScreen()">X</button>
+    </div>
+
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(1)">
+                    <span>What is Netflix?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer1">
+                    Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more on thousands of internet-connected devices.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(2)">
+                    <span>How much does Netflix cost?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer2">
+                    Netflix offers different subscription plans starting at $9.99 per month. Prices vary depending on the plan you choose.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(3)">
+                    <span>Where can I watch?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer3">
+                    You can watch Netflix on your smartphone, tablet, smart TV, laptop, or streaming device, all for one fixed monthly fee.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(4)">
+                    <span>How do I cancel?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer4">
+                    You can cancel your Netflix subscription at any time. There are no cancellation fees, and you can continue to access Netflix until the end of your billing period.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(5)">
+                    <span>What can I watch on Netflix?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer5">
+                    Netflix has an extensive library of TV shows, movies, anime, documentaries, and more. New content is added regularly.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(6)">
+                    <span>Is Netflix good for kids?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer" id="faqAnswer6">
+                    Yes, Netflix offers a kids' profile with curated content for children. Parents can also set parental controls to restrict access to certain content.
+                </div>
+            </div>
+        </div>
+
+    <!-- Footer -->
+    <footer>
+        <h>Designed and created by Divyansh and his team </h>
+        <p>&copy; 2025 Netflix, Inc. All Rights Reserved by Divyansh and productions.</p>
+        <p><a href="#">Terms of Service</a> | <a href="#">Privacy Policy</a> | <a href="#">Help</a></p>
+      
+    </footer>
+
+    <script>
+        // Profile Section Dynamic Content
+        document.getElementById('profileName').textContent = localStorage.getItem('profileName') || "Guest";
+        document.getElementById('profileImage').src = localStorage.getItem('profileImage') || "https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png";
+
+        // Open Movie Details
+        function openMovieDetails(title, description, imageSrc, videoSrc, cast, director) {
+            document.getElementById('movieDetails').style.display = 'block';
+            document.getElementById('movieDetailImage').src = imageSrc;
+            document.getElementById('movieTitle').textContent = title;
+            document.getElementById('movieDescription').textContent = description;
+            document.getElementById('movieCast').textContent = cast;
+            document.getElementById('movieDirector').textContent = director;
+            document.getElementById('movieDetailVideo').src = videoSrc;
+        }
+
+        // Close Movie Details
+        function closeMovieDetails() {
+            document.getElementById('movieDetails').style.display = 'none';
+        }
+
+        // Full-Screen Video Player
+        function playFullScreen(videoSrc) {
+            var fullscreenPlayer = document.getElementById('fullscreenVideoPlayer');
+            var fullscreenVideo = document.getElementById('fullscreenVideo');
+            fullscreenVideo.src = videoSrc;
+            fullscreenPlayer.style.display = 'block';
+            fullscreenVideo.play();
+        }
+
+        function closeFullScreen() {
+            var fullscreenPlayer = document.getElementById('fullscreenVideoPlayer');
+            var fullscreenVideo = document.getElementById('fullscreenVideo');
+            fullscreenVideo.pause();
+            fullscreenPlayer.style.display = 'none';
+        }
+
+        // Carousel Navigation
+        document.querySelector('.prev-btn').addEventListener('click', function() {
+            document.querySelector('.movie-carousel').scrollBy({ left: -220, behavior: 'smooth' });
+        });
+
+        document.querySelector('.next-btn').addEventListener('click', function() {
+            document.querySelector('.movie-carousel').scrollBy({ left: 220, behavior: 'smooth' });
+        });
+
+        // Smooth scroll to the hero section if needed
+        function scrollToHero() {
+            document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Call this function if you want to automatically scroll to the hero section
+        scrollToHero();
+
+        // FAQ Toggle Functionality
+        function toggleFAQ(id) {
+            const answer = document.getElementById(`faqAnswer${id}`);
+            const toggle = document.querySelector(`#faqAnswer${id}`).previousElementSibling.querySelector('.faq-toggle');
+            answer.classList.toggle('active');
+            toggle.classList.toggle('active');
+        }
+
+    </script>
+</body>
+</html>
